@@ -1,1 +1,1 @@
-Simulación del funcionamiento de los registros de una CPU para familiarizarme con ellos
+Simulación del funcionamiento de los registros de una CPU para familiarizarse con ellos
