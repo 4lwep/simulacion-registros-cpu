@@ -1,10 +1,9 @@
-use movimiento::{mov, mvn};
 use registro::Registro;
-use aritmetica::*;
+use crate::operaciones::aritmetica::*;
+use crate::operaciones::movimiento::*;
 
+mod operaciones;
 mod registro;
-mod aritmetica;
-mod movimiento;
 
 fn main() {
     let mut r0: Registro = Registro::nuevo("r0".to_string());
@@ -27,9 +26,9 @@ fn main() {
     mov(&mut r0, &12);
     mov(&mut r1, &32);
 
-    add(&r0, &r1);
-    sub(&r0, &r1);
-    mul(&r0, &r1);
+    add(&mut r0, &r1);
+    sub(&mut r0, &r1);
+    mul(&mut r0, &r1);
 
     mov(&mut r3, &r1);
 
@@ -42,12 +41,23 @@ fn main() {
     mvn(&mut r4, &ayuda_r4);
 
     let ayuda_r5 = r5.clone();
-    mov(&mut r5, &add(&r1, &r2));
-    mov(&mut r5, &add(&ayuda_r5, &ayuda_r5));
+    add(&mut r1, &r2);
+    add(&mut r5, &ayuda_r5);
 
+    println!("{}", r0.to_string());
     println!("{}", r1.to_string());
     println!("{}", r2.to_string());
     println!("{}", r3.to_string());
     println!("{}", r4.to_string());
     println!("{}", r5.to_string());
+    println!("{}", r6.to_string());
+    println!("{}", r7.to_string());
+    println!("{}", r8.to_string());
+    println!("{}", r9.to_string());
+    println!("{}", r10.to_string());
+    println!("{}", r11.to_string());
+    println!("{}", r12.to_string());
+    println!("{}", r13.to_string());
+    println!("{}", r14.to_string());
+    println!("{}", r15.to_string());
 }

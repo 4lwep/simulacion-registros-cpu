@@ -9,7 +9,7 @@ pub struct Registro{
 
 impl Registro{
     pub fn nuevo(nombre: String) -> Self{
-        Registro { nombre, tamaño: 64, valor: 0, flags: HashMap::from([("Zero".to_string(), true), ("Negative".to_string(), false), ("Overflow".to_string(), false)]) }
+        Registro { nombre, tamaño: 64, valor: 0, flags: HashMap::from([("Zero".to_string(), true), ("Negative".to_string(), false), ("Overflow".to_string(), false), ("Carry".to_string(), false)]) }
     }
 
     pub fn write(&mut self, valor: i64){
@@ -45,22 +45,31 @@ impl Registro{
 
     pub fn to_string(&self) -> String{
         let mut registro = String::new();
-        registro += "Registro ";
+        registro += "Registro: ";
         registro += &self.nombre as &str;
-        registro += ": Valor ";
-        registro += &self.valor.to_string() as &str;
-        registro += ": Flags ";
-        registro +=  &self.flags_to_string() as &str;
+        registro += "\t Valor: ";
+        registro += &self.read().to_string() as &str;
+        registro += "\t Flags: ";
+        registro +=  &self.true_flags_to_string() as &str;
         
         registro
     }
 
-    pub fn flags_to_string(&self) -> String{
-        let mut valor_flags = String::new();
+    pub fn true_flags_to_string(&self) -> String{
+        let mut flags = String::new();
+
         self.flags.iter().for_each(|f| {
-            valor_flags += f.0;
+            if self.get_flag(f.0.to_string()) {
+                flags += f.0;
+                flags.push(' ');
+            }
         });
-        valor_flags
+
+        if flags.len() == 0{
+            return "None".to_string()
+        }
+
+        flags
     }
 }
 
