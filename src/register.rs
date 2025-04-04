@@ -1,30 +1,35 @@
 use std::collections::HashMap;
 
-pub struct Registro{
-    nombre: String,
-    tamaño: u64,
-    valor: i64,
+pub struct Register{
+    name: String,
+    size: u64,
+    value: i64,
     flags: HashMap<String, bool>
 }
 
-impl Registro{
-    pub fn nuevo(nombre: String) -> Self{
-        Registro { nombre, tamaño: 64, valor: 0, flags: HashMap::from([("Zero".to_string(), true), ("Negative".to_string(), false), ("Overflow".to_string(), false), ("Carry".to_string(), false)]) }
+impl Register{
+    pub fn new(name: String) -> Self{
+        Register { name, size: 64, value: 0, flags: HashMap::from([
+            ("Zero".to_string(), true), 
+            ("Negative".to_string(), false), 
+            ("Overflow".to_string(), false), 
+            ("Carry".to_string(), false)]) 
+        }
     }
 
     pub fn write(&mut self, valor: i64){
-        if (size_of_val(&valor) as u64) < self.tamaño{
-            self.valor = valor;
+        if (size_of_val(&valor) as u64) < self.size{
+            self.value = valor;
 
-            self.set_flag("Zero".to_string(), self.valor == 0);
-            self.set_flag("Negative".to_string(), self.valor < 0);
+            self.set_flag("Zero".to_string(), self.value == 0);
+            self.set_flag("Negative".to_string(), self.value < 0);
         } else {
             println!("Error: el valor el demasiado grande");
         }
     }
 
     pub fn read(&self) -> i64{
-        self.valor
+        self.value
     }
 
     pub fn set_flag(&mut self, flag: String, estado: bool){
@@ -46,7 +51,7 @@ impl Registro{
     pub fn to_string(&self) -> String{
         let mut registro = String::new();
         registro += "Registro: ";
-        registro += &self.nombre as &str;
+        registro += &self.name as &str;
         registro += "\t Valor: ";
         registro += &self.read().to_string() as &str;
         registro += "\t Flags: ";
@@ -73,8 +78,8 @@ impl Registro{
     }
 }
 
-impl Clone for Registro{
+impl Clone for Register{
     fn clone(&self) -> Self {
-        Registro { nombre: self.nombre.clone(), tamaño: self.tamaño, valor: self.valor, flags: self.flags.clone() }
+        Register { name: self.name.clone(), size: self.size, value: self.value, flags: self.flags.clone() }
     }
 }
