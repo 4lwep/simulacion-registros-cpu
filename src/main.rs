@@ -26,9 +26,9 @@ fn main() {
     mov(&mut r0, &12);
     mov(&mut r1, &32);
 
-    add(&mut r0, &r1);
-    sub(&mut r0, &r1);
-    mul(&mut r0, &r1);
+    add(&mut r0, &r1, &r2);
+    sub(&mut r0, &r1, &r2);
+    mul(&mut r0, &r1, &r2);
 
     mov(&mut r3, &r1);
 
@@ -41,8 +41,10 @@ fn main() {
     mvn(&mut r4, &ayuda_r4);
 
     let ayuda_r5 = r5.clone();
-    add(&mut r1, &r2);
-    add(&mut r5, &ayuda_r5);
+    add(&mut r1, &r2, &r0);
+    add(&mut r5, &ayuda_r5, &ayuda_r5);
+
+    rsb(&mut r6, &r3, &r7);
 
     println!("{}", r0.to_string());
     println!("{}", r1.to_string());

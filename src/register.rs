@@ -83,3 +83,19 @@ impl Clone for Register{
         Register { name: self.name.clone(), size: self.size, value: self.value, flags: self.flags.clone() }
     }
 }
+
+pub trait RegisterValue{
+    fn read(&self) -> i64;
+}
+
+impl RegisterValue for Register{
+    fn read(&self) -> i64{
+        self.read()
+    }
+}
+
+impl RegisterValue for i64{
+    fn read(&self) -> i64{
+        *self
+    }
+}
