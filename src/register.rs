@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
 pub struct Register{
-    name: String,
+    pub name: String,
     size: u64,
     value: i64,
 }
@@ -37,6 +37,22 @@ impl Register{
 impl Clone for Register{
     fn clone(&self) -> Self {
         Register { name: self.name.clone(), size: self.size, value: self.value }
+    }
+}
+
+impl PartialEq for Register{
+    fn eq(&self, other: &Self) -> bool {
+        self.name.eq(&other.name)
+    }
+}
+
+impl Eq for Register {
+    
+}
+
+impl Hash for Register{
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
     }
 }
 
@@ -76,7 +92,15 @@ impl CPSR{
         self.flags.insert("Negative".to_string(), value < 0);
     }
 
-    pub fn check_flags(&self){
-        //TODO
+    pub fn flags_to_string(&self) -> String{
+        let mut flags = String::new();
+        println!("\n----FLAGS----");
+        self.flags.keys().for_each(|k| {
+            flags += k;
+            flags += ": ";
+            flags += &self.flags.get(k).unwrap().to_string() as &str;
+            flags.push('\n');
+        });
+        flags
     }
 }

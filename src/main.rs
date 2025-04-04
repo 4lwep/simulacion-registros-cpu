@@ -1,80 +1,77 @@
+use std::collections::HashSet;
+use std::io;
+
 use register::Register;
 use register::CPSR;
+use parser::Instruction;
 use crate::operations::arithmetic::*;
 use crate::operations::movement::*;
 
 mod operations;
+mod parser;
 mod register;
 
 fn main() {
-    let mut r0: Register = Register::new("r0".to_string());
-    let mut r1: Register = Register::new("r1".to_string());
-    let mut r2: Register = Register::new("r2".to_string());
-    let mut r3: Register = Register::new("r3".to_string());
-    let mut r4: Register = Register::new("r4".to_string());
-    let mut r5: Register = Register::new("r5".to_string());
-    let mut r6: Register = Register::new("r6".to_string());
-    let mut r7: Register = Register::new("r7".to_string());
-    let mut r8: Register = Register::new("r8".to_string());
-    let mut r9: Register = Register::new("r9".to_string());
-    let mut r10: Register = Register::new("r10".to_string());
-    let mut r11: Register = Register::new("r11".to_string());
-    let mut r12: Register = Register::new("r12".to_string());
-    let mut r13: Register = Register::new("r13".to_string());
-    let mut r14: Register = Register::new("r14".to_string());
-    let mut r15: Register = Register::new("r15".to_string());
+    let mut register_bank: HashSet<Register> = HashSet::new();
+
+    let r0: Register = Register::new("r0".to_string());
+    let r1: Register = Register::new("r1".to_string());
+    let r2: Register = Register::new("r2".to_string());
+    let r3: Register = Register::new("r3".to_string());
+    let r4: Register = Register::new("r4".to_string());
+    let r5: Register = Register::new("r5".to_string());
+    let r6: Register = Register::new("r6".to_string());
+    let r7: Register = Register::new("r7".to_string());
+    let r8: Register = Register::new("r8".to_string());
+    let r9: Register = Register::new("r9".to_string());
+    let r10: Register = Register::new("r10".to_string());
+    let r11: Register = Register::new("r11".to_string());
+    let r12: Register = Register::new("r12".to_string());
+    let r13: Register = Register::new("r13".to_string());
+    let r14: Register = Register::new("r14".to_string());
+    let r15: Register = Register::new("r15".to_string());
+    
     let mut cpsr: CPSR = CPSR::new();
 
-    mov(&mut r0, &12);
-    cpsr.set_flags(&r0);
-    mov(&mut r1, &32);
-    cpsr.set_flags(&r1);
+    register_bank.insert(r0);
+    register_bank.insert(r1);
+    register_bank.insert(r2);
+    register_bank.insert(r3);
+    register_bank.insert(r4);
+    register_bank.insert(r5);
+    register_bank.insert(r6);
+    register_bank.insert(r7);
+    register_bank.insert(r8);
+    register_bank.insert(r9);
+    register_bank.insert(r10);
+    register_bank.insert(r11);
+    register_bank.insert(r12);
+    register_bank.insert(r13);
+    register_bank.insert(r14);
+    register_bank.insert(r15);
 
-    add(&mut r0, &r1, &r2);
-    cpsr.set_flags(&r0);
-    sub(&mut r0, &r1, &r2);
-    cpsr.set_flags(&r0);
-    mul(&mut r0, &r1, &r2);
-    cpsr.set_flags(&r0);
+    loop{
+        let mut instruction = String::new();
+        let reader = io::stdin();
+        reader.read_line(&mut instruction).unwrap();
+        let parsed_instruction = Instruction::parse(instruction.trim().to_string(), &register_bank);
+        
 
-    mov(&mut r3, &r1);
-    cpsr.set_flags(&r3);
+        let mut rd = Register::new(parsed_instruction.rd_name);
+        match &parsed_instruction.operation as &str{
+            "mov" => {
+                mov(&mut rd, &parsed_instruction.operand2);
+            }
+            _ => {println!("ERROR: That operation does not exist");}
+        }
+        cpsr.set_flags(&rd);
+        register_bank.replace(rd);
+        
+        register_bank.iter().for_each(|r| {
+            println!("{}", r.to_string());
+        });
+        println!("{}", cpsr.flags_to_string());
+    }
 
-    let ayuda_r3 = r3.clone();
-    mov(&mut r3, &ayuda_r3);
-    cpsr.set_flags(&r3);
-    mov(&mut r2, &5);
-    cpsr.set_flags(&r2);
-    mvn(&mut r4, &r2);
-    cpsr.set_flags(&r4);
-
-    let ayuda_r4 = r4.clone();
-    mvn(&mut r4, &ayuda_r4);
-    cpsr.set_flags(&r4);
-
-    let ayuda_r5 = r5.clone();
-    add(&mut r1, &r2, &r0);
-    cpsr.set_flags(&r1);
-    add(&mut r5, &ayuda_r5, &ayuda_r5);
-    cpsr.set_flags(&r5);
-
-    rsb(&mut r6, &r3, &r7);
-    cpsr.set_flags(&r6);
-
-    println!("{}", r0.to_string());
-    println!("{}", r1.to_string());
-    println!("{}", r2.to_string());
-    println!("{}", r3.to_string());
-    println!("{}", r4.to_string());
-    println!("{}", r5.to_string());
-    println!("{}", r6.to_string());
-    println!("{}", r7.to_string());
-    println!("{}", r8.to_string());
-    println!("{}", r9.to_string());
-    println!("{}", r10.to_string());
-    println!("{}", r11.to_string());
-    println!("{}", r12.to_string());
-    println!("{}", r13.to_string());
-    println!("{}", r14.to_string());
-    println!("{}", r15.to_string());
+    
 }
