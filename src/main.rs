@@ -74,6 +74,21 @@ fn main() {
             "mov" => {
                 mov(&mut rd, &parsed_instruction.operand2);
             }
+            "mvn" => {
+                mvn(&mut rd, &parsed_instruction.operand2);
+            }
+            "add" => {
+                add(&mut rd, &parsed_instruction.rn.unwrap(), &parsed_instruction.operand2);
+            }
+            "sub" => {
+                sub(&mut rd, &parsed_instruction.rn.unwrap(), &parsed_instruction.operand2);
+            }
+            "mul" => {
+                mul(&mut rd, &parsed_instruction.rn.unwrap(), &parsed_instruction.operand2);
+            }
+            "rsb" => {
+                rsb(&mut rd, &parsed_instruction.rn.unwrap(), &parsed_instruction.operand2);
+            }
             _ => {
                 bad_operation = true;
             }
@@ -98,7 +113,7 @@ fn check_auxiliary_instructions(instruction: &String) -> char{
     match &instruction.trim() as &str {
         "h" => {
             println!("[LISTA DE OPERACIONES DISPONIBLES]");
-            println!("mov");
+            println!("mov, mvn, add, sub, mul, rsb");
             return 'h';
         }
 

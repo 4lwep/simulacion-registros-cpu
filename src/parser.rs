@@ -4,46 +4,33 @@ use crate::register::Register;
 pub struct Instruction{
     pub operation: String,
     pub rd_name: String,
-    pub rn_name: Option<String>,
+    pub rn: Option<Register>,
     pub operand2: i64
 }
 
 impl Instruction{
     pub fn parse(instruction: String, register_bank: &HashSet<Register>) -> Self{
-        let mut operation = String::new();
-        for c in instruction.chars(){
-            if c == ','{
-                break;
-            }
-            operation.push(c);
-        }
 
-        let mut rd_name = String::new();
-        let mut start = false;
-        for c in instruction.chars(){
-            if start && c == ','{
-                break;
-            }
-            if c == ','{
-                start = true;
-            }
-            if start && c != ','{
-                rd_name.push(c);
+        let parts = instruction.split(',');
+        let collection: Vec<&str> = parts.collect();
+
+        let operation = collection[0].trim().to_string();
+        let rd_name = collection[1].trim().to_string();
+        let mut rn: Option<Register> = None;
+        
+        if collection.len() == 4{
+            let rn_name = collection[2].trim().to_string();
+            
+            for r in register_bank{
+                if r.name == rn_name{
+                    rn = Some(r.clone());
+                }
             }
         }
 
-        let mut operand2 = String::new();
-        let mut start = 0;
-        let mut operand: i64 = 0;
-        for c in instruction.chars(){
-            if c == ','{
-                start += 1;
-            }
+        let operand2 = collection.last().unwrap().trim().to_string();
 
-            if start == 2 && c != ','{
-                operand2.push(c);
-            }   
-        }
+        let mut operand = 0;
         if operand2.len() > 0 && operand2.chars().nth(0).unwrap() == 'r'{
             
             for r in register_bank {
@@ -56,6 +43,6 @@ impl Instruction{
                 0
             });
         }
-        Instruction { operation, rd_name, rn_name: None, operand2: operand }
+        Instruction { operation, rd_name, rn, operand2: operand }
     }
 }
