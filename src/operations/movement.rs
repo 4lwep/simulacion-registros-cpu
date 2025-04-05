@@ -1,9 +1,9 @@
 use crate::register::*;
 
-pub fn mov<T: RegisterValue>(registro: &mut Register, valor: &T){
-    registro.write(valor.read());
+pub fn mov(registro: &mut Register, valor: &i64){
+    registro.write(*valor);
 }
 
-pub fn mvn<T: RegisterValue>(registro: &mut Register, valor: &T){
-    registro.write(!valor.read());
+pub fn mvn(registro: &mut Register, valor: &i64){
+    registro.write(!valor);
 }

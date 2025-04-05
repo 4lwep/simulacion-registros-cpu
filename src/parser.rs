@@ -44,7 +44,7 @@ impl Instruction{
                 operand2.push(c);
             }   
         }
-        if operand2.chars().nth(0).unwrap() == 'r'{
+        if operand2.len() > 0 && operand2.chars().nth(0).unwrap() == 'r'{
             
             for r in register_bank {
                 if r.name == operand2{
@@ -52,7 +52,9 @@ impl Instruction{
                 }
             }
         } else {
-            operand = operand2.trim().parse().unwrap();
+            operand = operand2.trim().parse().unwrap_or_else(|_| {
+                0
+            });
         }
         Instruction { operation, rd_name, rn_name: None, operand2: operand }
     }

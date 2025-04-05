@@ -12,6 +12,7 @@ mod parser;
 mod register;
 
 fn main() {
+    let reader = io::stdin();
     let mut register_bank: HashSet<Register> = HashSet::new();
 
     let r0: Register = Register::new("r0".to_string());
@@ -51,19 +52,38 @@ fn main() {
     register_bank.insert(r15);
 
     loop{
+        let mut bad_operation = false;
         let mut instruction = String::new();
-        let reader = io::stdin();
+        println!("Introduce una instrucción (h para mostrar una lista de comandos, q para salir)");
         reader.read_line(&mut instruction).unwrap();
+
+        match check_auxiliary_instructions(&instruction){
+            'h' => {continue;}
+            'q' => {break;}
+            _ => {}
+        }
+
         let parsed_instruction = Instruction::parse(instruction.trim().to_string(), &register_bank);
-        
+
+        if parsed_instruction.rd_name.len() == 0{
+            bad_operation = true;
+        }
 
         let mut rd = Register::new(parsed_instruction.rd_name);
         match &parsed_instruction.operation as &str{
             "mov" => {
                 mov(&mut rd, &parsed_instruction.operand2);
             }
-            _ => {println!("ERROR: That operation does not exist");}
+            _ => {
+                bad_operation = true;
+            }
         }
+
+        if bad_operation {
+            println!("Syntax error");
+            continue;
+        }
+
         cpsr.set_flags(&rd);
         register_bank.replace(rd);
         
@@ -72,6 +92,18 @@ fn main() {
         });
         println!("{}", cpsr.flags_to_string());
     }
+}
 
-    
+fn check_auxiliary_instructions(instruction: &String) -> char{
+    match &instruction.trim() as &str {
+        "h" => {
+            println!("[LISTA DE OPERACIONES DISPONIBLES]");
+            println!("mov");
+            return 'h';
+        }
+
+        "q" => {return 'q';}
+
+        _ => {return 'c';}
+    }
 }
