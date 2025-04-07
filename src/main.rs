@@ -6,6 +6,7 @@ use register::CPSR;
 use parser::Instruction;
 use crate::operations::arithmetic::*;
 use crate::operations::movement::*;
+use crate::operations::logical::*;
 
 mod operations;
 mod parser;
@@ -89,11 +90,20 @@ fn main() {
             "rsb" => {
                 rsb(&mut rd, &parsed_instruction.rn.unwrap(), &parsed_instruction.operand2);
             }
+            "and" => {
+                and(&mut rd, parsed_instruction.rn.unwrap(), parsed_instruction.operand2);
+            }
+            "eor" => {
+                eor(&mut rd, parsed_instruction.rn.unwrap(), parsed_instruction.operand2);
+            }
+            "orr" => {
+                orr(&mut rd, parsed_instruction.rn.unwrap(), parsed_instruction.operand2);
+            }
             _ => {
                 bad_operation = true;
             }
         }
-
+        
         if bad_operation {
             println!("Syntax error");
             continue;
@@ -113,7 +123,7 @@ fn check_auxiliary_instructions(instruction: &String) -> char{
     match &instruction.trim() as &str {
         "h" => {
             println!("[LISTA DE OPERACIONES DISPONIBLES]");
-            println!("mov, mvn, add, sub, mul, rsb");
+            println!("mov, mvn, add, sub, mul, rsb, and, eor, orr");
             return 'h';
         }
 

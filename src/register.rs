@@ -56,22 +56,6 @@ impl Hash for Register{
     }
 }
 
-/*pub trait RegisterValue{
-    fn read(&self) -> i64;
-}
-
-impl RegisterValue for Register{
-    fn read(&self) -> i64{
-        self.read()
-    }
-}
-
-impl RegisterValue for i64{
-    fn read(&self) -> i64{
-        *self
-    }
-}*/
-
 pub struct CPSR{
     flags: HashMap<String, bool>
 }
