@@ -13,7 +13,7 @@ impl Instruction{
 
         let parts = instruction.split(',');
         let collection: Vec<&str> = parts.collect();
-
+        assert!(collection.len() > 1);
         let operation = collection[0].trim().to_string();
         let rd_name = collection[1].trim().to_string();
         let mut rn: Option<Register> = None;

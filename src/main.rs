@@ -1,16 +1,18 @@
 use std::collections::HashSet;
 use std::io;
 
+use parser::tokens::InstructionStack;
 use register::Register;
 use register::CPSR;
-use parser::Instruction;
+use parser_old::Instruction;
 use crate::operations::arithmetic::*;
 use crate::operations::movement::*;
 use crate::operations::logical::*;
 
 mod operations;
-mod parser;
+mod parser_old;
 mod register;
+mod parser;
 
 fn main() {
     let reader = io::stdin();
@@ -51,6 +53,9 @@ fn main() {
     register_bank.insert(r13);
     register_bank.insert(r14);
     register_bank.insert(r15);
+
+
+    let mut instructions = InstructionStack::new_empty();
 
     loop{
         let mut bad_operation = false;
