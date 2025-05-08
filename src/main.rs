@@ -1,16 +1,16 @@
 use std::collections::HashSet;
 use std::io;
 
-use parser::tokens::InstructionStack;
+use crate::parser::Instruction;
+//use parser::tokens::Instruction;
 use register::Register;
 use register::CPSR;
-use parser_old::Instruction;
+//use crate::parser::tokens::InstructionStack;
 use crate::operations::arithmetic::*;
 use crate::operations::movement::*;
 use crate::operations::logical::*;
 
 mod operations;
-mod parser_old;
 mod register;
 mod parser;
 
@@ -55,10 +55,10 @@ fn main() {
     register_bank.insert(r15);
 
 
-    let mut instructions = InstructionStack::new_empty();
+    //let mut instructions = InstructionStack::new_empty(); //Maybe I can create another branch with this idea for the parser
 
     loop{
-        let mut bad_operation = false;
+        //let mut bad_operation = false;
         let mut instruction = String::new();
         println!("Introduce una instrucción (h para mostrar una lista de comandos, q para salir)");
         reader.read_line(&mut instruction).unwrap();
@@ -69,13 +69,9 @@ fn main() {
             _ => {}
         }
 
-        let parsed_instruction = Instruction::parse(instruction.trim().to_string(), &register_bank);
+        let parsed_instruction = Instruction::parse(instruction.trim().to_string(), &register_bank).unwrap();
 
-        if parsed_instruction.rd_name.len() == 0{
-            bad_operation = true;
-        }
-
-        let mut rd = Register::new(parsed_instruction.rd_name);
+        let mut rd = Register::new(parsed_instruction.rd.name);
         match &parsed_instruction.operation as &str{
             "mov" => {
                 mov(&mut rd, &parsed_instruction.operand2);
@@ -104,14 +100,7 @@ fn main() {
             "orr" => {
                 orr(&mut rd, parsed_instruction.rn.unwrap(), parsed_instruction.operand2);
             }
-            _ => {
-                bad_operation = true;
-            }
-        }
-        
-        if bad_operation {
-            println!("Syntax error");
-            continue;
+            _ => {}
         }
 
         cpsr.set_flags(&rd);
